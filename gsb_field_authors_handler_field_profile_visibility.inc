@@ -11,6 +11,20 @@
 class gsb_field_authors_handler_field_profile_visibility extends views_handler_field_field {
 
   /**
+   * The entity ID of the entity that contains this field.
+   *
+   * @var int|string
+   */
+  protected $gsb_field_authors_entity_id;
+
+  /**
+   * The entity type of the entity that contains this field.
+   *
+   * @var string
+   */
+  protected $gsb_field_authors_entity_type;
+
+  /**
    * {@inheritdoc}
    */
   function option_definition() {
@@ -48,7 +62,21 @@ class gsb_field_authors_handler_field_profile_visibility extends views_handler_f
       '#title' => t('Visibility'),
       '#title_display' => 'invisible',
       '#options' => list_allowed_values($this->field_info),
+      '#attributes' => array(
+        'class' => array(
+          'gsb-field-authors-visibility',
+        ),
+        'data-gsb-field-authors-entity-type' => $this->gsb_field_authors_entity_type,
+        'data-gsb-field-authors-entity-id' => $this->gsb_field_authors_entity_id,
+      ),
+      // Use #value instead of #default_value since this is a render array,
+      // not a true form.
       '#value' => $item['raw']['value'],
+      '#attached' => array(
+        'js' => array(
+          ctools_attach_js('gsb_field_authors', 'gsb_field_authors'),
+        ),
+      ),
     );
   }
 
@@ -61,6 +89,18 @@ class gsb_field_authors_handler_field_profile_visibility extends views_handler_f
     }
 
     return implode('', $items);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  function advanced_render($values) {
+    // Store the entity type and ID so the field can output it.
+    $this->gsb_field_authors_entity_type = $values->_field_data[$this->field_alias]['entity_type'];
+    list($entity_id) = entity_extract_ids($this->gsb_field_authors_entity_type, $values->_field_data[$this->field_alias]['entity']);
+    $this->gsb_field_authors_entity_id = $entity_id;
+
+    return parent::advanced_render($values);
   }
 
 }
