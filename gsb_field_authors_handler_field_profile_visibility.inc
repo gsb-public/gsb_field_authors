@@ -39,22 +39,28 @@ class gsb_field_authors_handler_field_profile_visibility extends views_handler_f
    * {@inheritdoc}
    */
   function render_item($count, $item) {
-    $rendered_item = parent::render_item($count, $item);
-    if ($this->options['use_form_element']) {
-      // @todo.
+    if (!$this->options['use_form_element']) {
+      return parent::render_item($count, $item);
     }
-    return $rendered_item;
+
+    return array(
+      '#type' => 'select',
+      '#title' => t('Visibility'),
+      '#title_display' => 'invisible',
+      '#options' => list_allowed_values($this->field_info),
+      '#value' => $item['raw']['value'],
+    );
   }
 
   /**
    * {@inheritdoc}
    */
   function render_items($items) {
-    $rendered_items = parent::render_items($items);
-    if ($this->options['use_form_element']) {
-      // @todo.
+    if (!$this->options['use_form_element']) {
+      return parent::render_items($items);
     }
-    return $rendered_items;
+
+    return implode('', $items);
   }
 
 }
