@@ -1,0 +1,5 @@
+name = GSB Field Authors
+description = Provides custom functionality related to authors.
+package = GSB
+core = 7.x
+dependencies[] = gsb_feature_base_fields
