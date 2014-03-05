@@ -3,3 +3,4 @@ description = Provides custom functionality related to authors.
 package = GSB
 core = 7.x
 dependencies[] = gsb_feature_base_fields
+files[] = gsb_field_authors_handler_field_profile_visibility.inc
