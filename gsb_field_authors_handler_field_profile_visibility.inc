@@ -11,6 +11,13 @@
 class gsb_field_authors_handler_field_profile_visibility extends views_handler_field_field {
 
   /**
+   * The entity that contains this field.
+   *
+   * @var object
+   */
+  protected $gsb_field_authors_entity;
+
+  /**
    * The entity ID of the entity that contains this field.
    *
    * @var int|string
@@ -61,7 +68,7 @@ class gsb_field_authors_handler_field_profile_visibility extends views_handler_f
       '#type' => 'select',
       '#title' => t('Visibility'),
       '#title_display' => 'invisible',
-      '#options' => list_allowed_values($this->field_info),
+      '#options' => list_allowed_values($this->field_info, NULL, $this->gsb_field_authors_entity_type, $this->gsb_field_authors_entity),
       '#attributes' => array(
         'class' => array(
           'gsb-field-authors-visibility',
@@ -97,7 +104,8 @@ class gsb_field_authors_handler_field_profile_visibility extends views_handler_f
   function advanced_render($values) {
     // Store the entity type and ID so the field can output it.
     $this->gsb_field_authors_entity_type = $values->_field_data[$this->field_alias]['entity_type'];
-    list($entity_id) = entity_extract_ids($this->gsb_field_authors_entity_type, $values->_field_data[$this->field_alias]['entity']);
+    $this->gsb_field_authors_entity = clone $values->_field_data[$this->field_alias]['entity'];
+    list($entity_id) = entity_extract_ids($this->gsb_field_authors_entity_type, $this->gsb_field_authors_entity);
     $this->gsb_field_authors_entity_id = $entity_id;
 
     return parent::advanced_render($values);

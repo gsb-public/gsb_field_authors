@@ -66,7 +66,9 @@ function gsb_field_authors_field_views_data_alter(&$data, $field, $module) {
  * Returns the list of profile visibility options base on content type.
  * For publication we add the 'Featured' option
  */
-function gsb_field_authors_get_allowed_profile_visibility($field, $instance, $entity_type, $entity, $cacheable) {
+function gsb_field_authors_get_allowed_profile_visibility($field, $instance, $entity_type, $entity, &$cacheable) {
+  // This needs to be checked for every field.
+  $cacheable = FALSE;
   if ($entity instanceof FieldCollectionItemEntity && $entity->hostEntityBundle() == 'publication') {
     return array(
       0 => 'Hidden',
