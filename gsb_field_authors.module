@@ -73,7 +73,20 @@ function gsb_field_authors_field_views_data_alter(&$data, $field, $module) {
 function gsb_field_authors_get_allowed_profile_visibility($field, $instance, $entity_type, $entity, &$cacheable) {
   // This needs to be checked for every field.
   $cacheable = FALSE;
-  if ($entity instanceof FieldCollectionItemEntity && $entity->hostEntityBundle() != 'publication') {
+
+  // If this is a field collection item, use the bundle of the host entity.
+  if ($entity instanceof FieldCollectionItemEntity) {
+    $bundle = $entity->hostEntityBundle();
+  }
+  // Otherwise, extract it from the entity itself.
+  elseif ($entity) {
+    list(, , $bundle) = entity_extract_ids($entity_type, $entity);
+  }
+  else {
+    $bundle = '';
+  }
+
+  if ($bundle != 'publication') {
     return array(
       0 => 'Hidden',
       1 => 'Visible',
