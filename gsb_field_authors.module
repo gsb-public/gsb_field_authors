@@ -282,3 +282,22 @@ function gsb_field_authors_node_view($node, $view_mode, $langcode) {
       ) + $faculty_authors;
   }
 }
+
+/**
+ * Implements hook_form_alter().
+ */
+function gsb_field_authors_form_alter(&$form, &$form_state) {
+  if (!isset($form['field_authors'])) {
+    return;
+  }
+
+  $language = $form['language']['#value'];
+
+  // Change Authors FC button labels.
+  $form['field_authors'][$language]['add_more']['#value'] = t('Add Another Author');
+  foreach (element_children($form['field_authors'][$language]) as $delta) {
+    if (is_numeric($delta)) {
+      $form['field_authors'][$language][$delta]['remove_button']['#value'] = t('Remove Author');
+    }
+  }
+}
