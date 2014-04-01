@@ -28,6 +28,11 @@ Drupal.behaviors.gsbFieldAuthors = {
  * Process the response from updating the visibility.
  */
 Drupal.ajax.prototype.commands.gsb_field_authors_result = function (ajax, response, status) {
+  var $element = $(ajax.element);
+  $element.val(ajax.options.data.profile_visibility_value);
+  if ($.fn.FormObserve_save) {
+    $element.FormObserve_save();
+  }
 };
 
 }(jQuery));
