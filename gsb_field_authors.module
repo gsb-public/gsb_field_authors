@@ -168,6 +168,9 @@ function gsb_field_authors_field_attach_form($entity_type, $entity, &$form, &$fo
     if (($host_entity = $entity->hostEntity()) && !empty($host_entity->gsb_parent_node) && $parent_node = node_load($host_entity->gsb_parent_node)) {
       $form['field_person_fac_single_ref'][$langcode][0]['target_id']['#default_value'] = $parent_node->title . ' (' . $parent_node->nid . ')';
       $form['field_person_fac_or_other'][$langcode]['#default_value'] = 'UseEntityReference';
+
+      // Prevent further fields from pre-filling with these values.
+      unset($host_entity->gsb_parent_node);
     }
   }
 }
