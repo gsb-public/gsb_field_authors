@@ -72,6 +72,7 @@ class gsb_field_authors_handler_field_profile_visibility extends views_handler_f
       '#attributes' => array(
         'class' => array(
           'gsb-field-authors-visibility',
+          'gsb-form-message-optout',
         ),
         'data-gsb-field-authors-entity-type' => $this->gsb_field_authors_entity_type,
         'data-gsb-field-authors-entity-id' => $this->gsb_field_authors_entity_id,
