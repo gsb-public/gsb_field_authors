@@ -86,7 +86,8 @@ function gsb_field_authors_get_allowed_profile_visibility($field, $instance, $en
     $bundle = '';
   }
 
-  if ($bundle != 'publication') {
+  $featured_bundles = array();
+  if (!in_array($bundle, $featured_bundles)) {
     return array(
       0 => 'Hidden',
       1 => 'Visible',
