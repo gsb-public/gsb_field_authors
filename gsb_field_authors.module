@@ -260,8 +260,9 @@ function gsb_field_authors_node_view($node, $view_mode, $langcode) {
   $wrapper = entity_metadata_wrapper('node', $node);
   $faculty_authors = array();
   foreach ($wrapper->field_authors as $key => $author) {
-    if (($faculty = $author->field_person_fac_single_ref) && $id = $faculty->getIdentifier()) {
-      $view = $faculty->view('people_fpp');
+    if ($author->access('view') && $author->faculty->value()) {
+      $view = $author->faculty->view('people_fpp');
+      $id = $author->faculty->getIdentifier();
       if (isset($view['node'][$id])) {
         $faculty_authors[$id] = $view['node'][$id];
         $faculty_authors[$id]['#weight'] = $key;
@@ -287,5 +288,54 @@ function gsb_field_authors_node_view($node, $view_mode, $langcode) {
           '#weight' => -100,
         ),
       ) + $faculty_authors;
+  }
+}
+
+/**
+ * Implements hook_entity_info_alter().
+ */
+function gsb_field_authors_entity_info_alter(&$entity_info) {
+  // Set a custom access callback for field collection items.
+  $entity_info['field_collection_item']['access callback'] = 'gsb_field_authors_field_collection_item_access';
+}
+
+/**
+ * Determines whether the given user has access to a field collection.
+ */
+function gsb_field_authors_field_collection_item_access($op, FieldCollectionItemEntity $entity = NULL, $account = NULL) {
+  // If this field collection is for field authors, and contains a faculty
+  // member, check their status.
+  if ($entity->field_name == 'field_authors') {
+    $author = entity_metadata_wrapper('field_collection_item', $entity);
+    if ($author->faculty->value() && !$author->faculty->status->value()) {
+      return FALSE;
+    }
+  }
+  // Pass through to the generic access check.
+  return field_collection_item_access($op, $entity, $account);
+}
+
+/**
+ * Implements hook_entity_property_info_alter().
+ */
+function gsb_field_authors_entity_property_info_alter(&$info) {
+  $properties = &$info['field_collection_item']['bundles']['field_authors']['properties'];
+
+  $properties['faculty'] = array(
+    'label' => t('Faculty'),
+    'description' => t('The faculty member this author represents.'),
+    'type' => 'entity',
+    'getter callback' => 'gsb_field_authors_get_faculty',
+    'computed' => TRUE,
+  );
+}
+
+/**
+ * Returns either the faculty member or NULL from a given author.
+ */
+function gsb_field_authors_get_faculty(FieldCollectionItemEntity $entity, array $options, $name, $entity_type, $info) {
+  $wrapper = entity_metadata_wrapper($entity_type, $entity);
+  if (($faculty = $wrapper->field_person_fac_single_ref) && $faculty->getIdentifier()) {
+    return $faculty;
   }
 }
