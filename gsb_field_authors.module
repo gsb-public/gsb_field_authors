@@ -260,7 +260,7 @@ function gsb_field_authors_node_view($node, $view_mode, $langcode) {
   $wrapper = entity_metadata_wrapper('node', $node);
   $faculty_authors = array();
   foreach ($wrapper->field_authors as $key => $author) {
-    if (($faculty = $author->field_person_fac_single_ref) && $id = $faculty->getIdentifier()) {
+    if (($faculty = $author->field_person_fac_single_ref) && ($id = $faculty->getIdentifier()) && $faculty->status->value()) {
       $view = $faculty->view('people_fpp');
       if (isset($view['node'][$id])) {
         $faculty_authors[$id] = $view['node'][$id];
