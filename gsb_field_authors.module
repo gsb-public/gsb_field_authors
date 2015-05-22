@@ -277,16 +277,6 @@ function gsb_field_authors_node_view($node, $view_mode, $langcode) {
             'faculty-author-wrapper',
           ),
         ),
-        'label' => array(
-          '#type' => 'container',
-          '#attributes' => array(
-            'class' => array(
-              'label-above',
-            ),
-          ),
-          '#children' => t('Faculty Authors'),
-          '#weight' => -100,
-        ),
       ) + $faculty_authors;
   }
 }
